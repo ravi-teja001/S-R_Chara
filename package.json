@@ -1,0 +1,13 @@
+{
+  "name": "s-r-migration",
+  "private": true,
+  "description": "Root package – Railway runs build/start from here and delegates to backend.",
+  "scripts": {
+    "build": "cd backend && npm ci && npm run build",
+    "start": "cd backend && npm start",
+    "deploy": "bash scripts/deploy.sh"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
