@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "deploy": "cd .. && npm run deploy",
     "lint": "eslint .",
     "preview": "vite preview",
     "build:apk": "npm run build && npx cap sync android && cd android && ./gradlew assembleRelease && cd .. && mkdir -p APK_DISTRIBUTION && cp -f android/app/build/outputs/apk/release/app-release.apk APK_DISTRIBUTION/Biochar-Management-System-v1.0.0.apk && echo '✅ APK built successfully at APK_DISTRIBUTION/Biochar-Management-System-v1.0.0.apk'",

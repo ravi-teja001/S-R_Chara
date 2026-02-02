@@ -5,6 +5,14 @@
 From the **project root** (the folder that has `backend` and `biochar-bloom-main`), run:
 
 ```bash
+cd "/Users/hamsi/Documents/PROJECT_CHARA/S&R_MIGRATION"
+npm run deploy
+```
+
+If you're inside `biochar-bloom-main`, go up one folder first:
+
+```bash
+cd ..
 npm run deploy
 ```
 
