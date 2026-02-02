@@ -16,7 +16,12 @@ import { runSchemaIfNeeded } from './migrate';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors({ origin: true }));
+app.use(cors({
+  origin: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+}));
 app.use(express.json());
 
 app.get('/health', (_req, res) => {

@@ -8,8 +8,14 @@
     "build": "tsc && vite build",
     "deploy": "cd .. && npm run deploy",
     "deploy:complete": "cd .. && npm run deploy:complete",
+    "deploy:all": "cd .. && npm run deploy:all",
+    "start": "cd .. && npm run web",
+    "web": "cd .. && npm run web",
+    "env:railway": "cd .. && npm run env:railway",
     "lint": "eslint .",
     "preview": "vite preview",
+    "build:prod": "tsc && vite build",
+    "serve": "npx serve -s dist -l ${PORT:-8080}",
     "build:apk": "npm run build && npx cap sync android && cd android && ./gradlew assembleRelease && cd .. && mkdir -p APK_DISTRIBUTION && cp -f android/app/build/outputs/apk/release/app-release.apk APK_DISTRIBUTION/Biochar-Management-System-v1.0.0.apk && echo '✅ APK built successfully at APK_DISTRIBUTION/Biochar-Management-System-v1.0.0.apk'",
     "build:apk-v2": "npm run build && npx cap sync android && cd android && sed -i '' 's/versionCode 1/versionCode 2/g' app/build.gradle && sed -i '' 's/versionName \"1.0\"/versionName \"2.0\"/g' app/build.gradle && ./gradlew assembleRelease && sed -i '' 's/versionCode 2/versionCode 1/g' app/build.gradle && sed -i '' 's/versionName \"2.0\"/versionName \"1.0\"/g' app/build.gradle && cd .. && mkdir -p APK_DISTRIBUTION && cp -f android/app/build/outputs/apk/release/app-release.apk APK_DISTRIBUTION/Biochar-Management-Pro-v2.0.0.apk && echo '✅ APK v2.0.0 built successfully at APK_DISTRIBUTION/Biochar-Management-Pro-v2.0.0.apk'",
     "build:apk-v3": "npm run build && npx cap sync android && cd android && sed -i '' 's/versionCode 1/versionCode 3/g' app/build.gradle && sed -i '' 's/versionName \"1.0\"/versionName \"3.0\"/g' app/build.gradle && ./gradlew assembleRelease && sed -i '' 's/versionCode 3/versionCode 1/g' app/build.gradle && sed -i '' 's/versionName \"3.0\"/versionName \"1.0\"/g' app/build.gradle && cd .. && mkdir -p APK_DISTRIBUTION && cp -f android/app/build/outputs/apk/release/app-release.apk APK_DISTRIBUTION/Biochar-Management-Pro-v3.0.0.apk && echo '✅ APK v3.0.0 built successfully at APK_DISTRIBUTION/Biochar-Management-Pro-v3.0.0.apk'",
@@ -74,6 +80,7 @@
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.17",
     "typescript": "~5.7.2",
-    "vite": "^6.0.3"
+    "vite": "^6.0.3",
+    "serve": "^14.2.4"
   }
 }
