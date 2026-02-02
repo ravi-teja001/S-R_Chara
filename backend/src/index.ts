@@ -39,20 +39,33 @@ app.get('/health/db', async (_req, res) => {
       });
     }
     const client = await pool.connect();
+    let hasAppUsers = false;
     try {
       const r = await client.query(
         `SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'app_users' LIMIT 1`
       );
-      const hasAppUsers = r.rows.length > 0;
-      res.json({
-        ok: hasAppUsers,
-        database: 'connected',
-        app_users: hasAppUsers,
-        hint: hasAppUsers ? null : 'Schema not applied. Redeploy S-R_Chara so schema runs on startup, or run backend/database/schema.sql in Postgres Query.',
-      });
+      hasAppUsers = r.rows.length > 0;
     } finally {
       client.release();
     }
+    if (!hasAppUsers) {
+      await runSchemaIfNeeded();
+      const client2 = await pool.connect();
+      try {
+        const r2 = await client2.query(
+          `SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'app_users' LIMIT 1`
+        );
+        hasAppUsers = r2.rows.length > 0;
+      } finally {
+        client2.release();
+      }
+    }
+    res.json({
+      ok: hasAppUsers,
+      database: 'connected',
+      app_users: hasAppUsers,
+      hint: hasAppUsers ? null : 'Schema apply failed. Check Railway logs for S-R_Chara.',
+    });
   } catch (e: any) {
     res.json({
       ok: false,
