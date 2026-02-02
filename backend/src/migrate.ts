@@ -6,8 +6,17 @@ import { pool } from './db';
 import fs from 'fs';
 import path from 'path';
 
-// Path relative to compiled file (dist/migrate.js) so it works on Railway regardless of cwd
-const DEFAULT_SCHEMA_PATH = path.join(__dirname, '..', 'database', 'schema.sql');
+// Schema is copied to dist/schema.sql during build so deploy always has it
+const SCHEMA_IN_DIST = path.join(__dirname, 'schema.sql');
+const SCHEMA_IN_SOURCE = path.join(__dirname, '..', 'database', 'schema.sql');
+
+function getSchemaPath(): string | null {
+  if (fs.existsSync(SCHEMA_IN_DIST)) return SCHEMA_IN_DIST;
+  if (fs.existsSync(SCHEMA_IN_SOURCE)) return SCHEMA_IN_SOURCE;
+  const inCwd = path.join(process.cwd(), 'database', 'schema.sql');
+  if (fs.existsSync(inCwd)) return inCwd;
+  return null;
+}
 
 export async function runSchemaIfNeeded(): Promise<void> {
   const databaseUrl = process.env.DATABASE_URL;
@@ -23,12 +32,9 @@ export async function runSchemaIfNeeded(): Promise<void> {
       return;
     }
 
-    // Prefer path relative to compiled file so it works on Railway (any cwd)
-    const schemaPath = fs.existsSync(DEFAULT_SCHEMA_PATH)
-      ? DEFAULT_SCHEMA_PATH
-      : path.join(process.cwd(), 'database', 'schema.sql');
-    if (!fs.existsSync(schemaPath)) {
-      console.warn('schema.sql not found at', schemaPath);
+    const schemaPath = getSchemaPath();
+    if (!schemaPath) {
+      console.warn('schema.sql not found (tried dist/, database/, cwd)');
       return;
     }
 
