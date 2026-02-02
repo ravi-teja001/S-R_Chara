@@ -316,7 +316,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         });
         const data = await res.json().catch(() => ({}));
         if (!res.ok) {
-          return { success: false, message: data.error || 'Signup failed' };
+          const msg = data.error || 'Signup failed';
+          const hint = data.hint ? ` ${data.hint}` : '';
+          return { success: false, message: msg + hint };
         }
         const token = data.session?.access_token;
         const u = data.user;
@@ -340,6 +342,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           });
         }
         return { success: true, message: 'Account created and logged in successfully!' };
+      }
+
+      // Railway URL not set or still placeholder – don't fall back to Supabase (would fail)
+      const supabaseIsPlaceholder = !environment.supabaseUrl || environment.supabaseUrl.includes('placeholder');
+      if (supabaseIsPlaceholder) {
+        return {
+          success: false,
+          message: 'Set your Railway API URL to use signup. In .env.local set VITE_API_URL to your Railway backend URL and restart the dev server. From repo root run: npm run web (with Railway CLI linked).',
+        };
       }
 
       // Check if using placeholder credentials (development mode)

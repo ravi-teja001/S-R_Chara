@@ -111,7 +111,8 @@ export default function Index() {
     }
     setLoading(true);
     try {
-      const result = await signup(email, password, selectedRole as UserRole);
+      const name = email.split('@')[0] || 'User';
+      const result = await signup(email, password, name, selectedRole as UserRole);
       if (result.success) {
         swal.success(result.message);
         // Check if user is already logged in (auto-login after signup)

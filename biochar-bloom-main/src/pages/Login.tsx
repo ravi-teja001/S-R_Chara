@@ -159,8 +159,8 @@ export default function Login() {
       const success = await login(email, password, roleToUse as UserRole);
       console.log('Login function returned:', success);
       if (success) {
-        console.log('Login successful, navigating to dashboard...');
-        navigate('/dashboard');
+        // Don't navigate here – let the useEffect below redirect when isAuthenticated becomes true.
+        // This avoids a race where DashboardLayout could see user === null and redirect back to /login.
       } else {
         setError('Login failed. Please try again.');
       }

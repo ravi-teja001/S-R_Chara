@@ -28,6 +28,42 @@ app.get('/health', (_req, res) => {
   res.json({ ok: true, service: 'biochar-api' });
 });
 
+app.get('/health/db', async (_req, res) => {
+  try {
+    if (!process.env.DATABASE_URL) {
+      return res.json({
+        ok: false,
+        database: 'DATABASE_URL not set',
+        app_users: false,
+        hint: 'In Railway: S-R_Chara → Variables → add Postgres as dependency or set DATABASE_URL',
+      });
+    }
+    const client = await pool.connect();
+    try {
+      const r = await client.query(
+        `SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'app_users' LIMIT 1`
+      );
+      const hasAppUsers = r.rows.length > 0;
+      res.json({
+        ok: hasAppUsers,
+        database: 'connected',
+        app_users: hasAppUsers,
+        hint: hasAppUsers ? null : 'Schema not applied. Redeploy S-R_Chara so schema runs on startup, or run backend/database/schema.sql in Postgres Query.',
+      });
+    } finally {
+      client.release();
+    }
+  } catch (e: any) {
+    res.json({
+      ok: false,
+      database: 'error',
+      app_users: false,
+      error: e?.message || 'Connection failed',
+      hint: 'Check DATABASE_URL and that Postgres is running. In Railway: link Postgres to S-R_Chara.',
+    });
+  }
+});
+
 app.use('/api/auth', auth);
 
 app.use('/api/stock-points', optionalAuth, stockPoints);

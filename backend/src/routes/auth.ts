@@ -81,8 +81,15 @@ router.post('/signup', async (req: Request, res: Response) => {
       res.status(400).json({ error: 'Email already registered' });
       return;
     }
-    console.error(e);
-    res.status(500).json({ error: 'Signup failed' });
+    console.error('Signup error:', e);
+    const message = e?.message || 'Signup failed';
+    const hint = message.includes('does not exist') || message.includes('relation')
+      ? ' Database schema may not be applied. In Railway, ensure DATABASE_URL is set and the API service has run (schema runs on first startup).'
+      : '';
+    res.status(500).json({
+      error: process.env.NODE_ENV === 'production' ? 'Signup failed' : message,
+      ...(hint && { hint }),
+    });
   }
 });
 

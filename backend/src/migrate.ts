@@ -6,6 +6,9 @@ import { pool } from './db';
 import fs from 'fs';
 import path from 'path';
 
+// Path relative to compiled file (dist/migrate.js) so it works on Railway regardless of cwd
+const DEFAULT_SCHEMA_PATH = path.join(__dirname, '..', 'database', 'schema.sql');
+
 export async function runSchemaIfNeeded(): Promise<void> {
   const databaseUrl = process.env.DATABASE_URL;
   if (!databaseUrl) return;
@@ -20,7 +23,10 @@ export async function runSchemaIfNeeded(): Promise<void> {
       return;
     }
 
-    const schemaPath = path.join(process.cwd(), 'database', 'schema.sql');
+    // Prefer path relative to compiled file so it works on Railway (any cwd)
+    const schemaPath = fs.existsSync(DEFAULT_SCHEMA_PATH)
+      ? DEFAULT_SCHEMA_PATH
+      : path.join(process.cwd(), 'database', 'schema.sql');
     if (!fs.existsSync(schemaPath)) {
       console.warn('schema.sql not found at', schemaPath);
       return;

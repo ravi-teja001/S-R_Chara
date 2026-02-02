@@ -1,15 +1,9 @@
 import { createClient } from '@supabase/supabase-js';
 import { environment } from './environment';
 
-// Validate environment variables
-if (!environment.supabaseUrl || !environment.supabaseKey) {
-  console.error('❌ Supabase environment variables are not set!');
-  console.error('🔧 Required: VITE_SUPABASE_URL and VITE_SUPABASE_KEY');
-  console.error('🔧 Please check your .env.local file');
-  console.error('🔧 Current values:', {
-    supabaseUrl: environment.supabaseUrl ? 'SET' : 'MISSING',
-    supabaseKey: environment.supabaseKey ? 'SET' : 'MISSING'
-  });
+// Only warn when not using Railway API (Supabase would be used for auth)
+if (!environment.apiUrl && (!environment.supabaseUrl || !environment.supabaseKey)) {
+  console.warn('Supabase env not set. Set VITE_API_URL for Railway, or VITE_SUPABASE_URL + VITE_SUPABASE_KEY for Supabase.');
 }
 
 export const supabase = createClient(
@@ -28,8 +22,3 @@ export const supabase = createClient(
     }
   }
 );
-
-// Test connection
-console.log('🔍 Supabase client initialized');
-console.log('🔗 URL:', environment.supabaseUrl ? 'SET' : 'MISSING');
-console.log('🔑 Key:', environment.supabaseKey ? 'SET' : 'MISSING');

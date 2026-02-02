@@ -5,6 +5,7 @@
   "scripts": {
     "build": "cd backend && npm ci && npm run build",
     "start": "cd backend && npm start",
+    "dev": "npm run web",
     "web": "bash scripts/start-web.sh",
     "env:railway": "bash scripts/update-env-railway.sh",
     "build:web": "cd biochar-bloom-main && npm ci && npm run build",

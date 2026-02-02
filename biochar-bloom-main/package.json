@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "(npm run env:railway || true) && vite",
     "build": "tsc && vite build",
     "deploy": "cd .. && npm run deploy",
     "deploy:complete": "cd .. && npm run deploy:complete",
