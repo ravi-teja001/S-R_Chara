@@ -4,7 +4,7 @@
   "description": "Biochar Management API - Railway backend",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc && node -e \"require('fs').copyFileSync('database/schema.sql', 'dist/schema.sql')\"",
+    "build": "node scripts/generate-schema-ts.js && tsc",
     "start": "node dist/index.js",
     "dev": "ts-node-dev --respawn src/index.ts",
     "deploy": "railway up --detach",

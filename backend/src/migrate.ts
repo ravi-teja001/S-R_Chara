@@ -1,22 +1,10 @@
 /**
  * Run schema automatically on startup if tables don't exist (e.g. first deploy on Railway).
+ * Schema is embedded in the build (schemaSql.generated.ts) so no file path is needed at runtime.
  */
 
 import { pool } from './db';
-import fs from 'fs';
-import path from 'path';
-
-// Schema is copied to dist/schema.sql during build so deploy always has it
-const SCHEMA_IN_DIST = path.join(__dirname, 'schema.sql');
-const SCHEMA_IN_SOURCE = path.join(__dirname, '..', 'database', 'schema.sql');
-
-function getSchemaPath(): string | null {
-  if (fs.existsSync(SCHEMA_IN_DIST)) return SCHEMA_IN_DIST;
-  if (fs.existsSync(SCHEMA_IN_SOURCE)) return SCHEMA_IN_SOURCE;
-  const inCwd = path.join(process.cwd(), 'database', 'schema.sql');
-  if (fs.existsSync(inCwd)) return inCwd;
-  return null;
-}
+import { schemaSql } from './schemaSql.generated';
 
 export async function runSchemaIfNeeded(): Promise<void> {
   const databaseUrl = process.env.DATABASE_URL;
@@ -32,14 +20,7 @@ export async function runSchemaIfNeeded(): Promise<void> {
       return;
     }
 
-    const schemaPath = getSchemaPath();
-    if (!schemaPath) {
-      console.warn('schema.sql not found (tried dist/, database/, cwd)');
-      return;
-    }
-
-    const sql = fs.readFileSync(schemaPath, 'utf8');
-    const statements = sql
+    const statements = schemaSql
       .split(';')
       .map((s) => s.trim())
       .filter((s) => s.length > 0 && !s.startsWith('--'));
