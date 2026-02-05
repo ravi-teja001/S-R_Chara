@@ -12,7 +12,8 @@
     "build:web:prod": "cd biochar-bloom-main && npm ci && npm run build:prod",
     "deploy": "bash scripts/deploy.sh",
     "deploy:complete": "bash scripts/complete-deploy.sh",
-    "deploy:all": "bash scripts/deploy-all.sh"
+    "deploy:all": "bash scripts/deploy-all.sh",
+    "db:schema": "cd backend && railway run node scripts/run-schema.js"
   },
   "engines": {
     "node": ">=18"

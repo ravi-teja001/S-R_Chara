@@ -1,0 +1,12 @@
+# Force npm (not Bun) so root build matches our scripts (build = cd backend && npm ci && npm run build)
+[phases.setup]
+nixPkgs = ["nodejs_18"]
+
+[phases.install]
+cmds = ["npm install"]
+
+[phases.build]
+cmds = ["npm run build"]
+
+[start]
+cmd = "npm start"
